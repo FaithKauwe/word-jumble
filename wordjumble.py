@@ -54,7 +54,7 @@ def build_sorted_dict(words_list):
             # if the key already exists, add the word to the set
             sorted_dict[key].add(word)
         else:
-        # store the value words temporarily (sets exclude duplicates). {word} creates a new set with one element
+        # store the value words temporarily in a set (sets exclude duplicates). {word} creates a new set with one element
             sorted_dict[key] = {word}
     for key in sorted_dict:
         # convert all the values from sets of words to lists
@@ -72,12 +72,17 @@ def solve_one_jumble(letters):
     # Create a list to store all valid words the final letters unscramble to
     # Returned data should be a list of strings (words)
     # Example: solve_one_jumble('ILST') --> ['LIST', 'SILT', 'SLIT']
-    valid_words = []
 
-    # TODO: Unscramble the given letters into all valid words (or at least one)
-    # ========> YOUR CODE HERE <========
+    # use the sorting helper function to sort the letters of the jumbled word alphebetically
+    key = sorted_letters(letters)
+    # use the sorted letters as a key to look up the value in the dictionary
+    valid_words = anagram_dict.get(key, [])
+    # if the key has a match in the dict, return the value of the key, which is a list of words
+    if valid_words:
+        return valid_words
+    else:
+        return []
 
-    return valid_words
 
 
 def solve_final_jumble(letters, final_circles):
