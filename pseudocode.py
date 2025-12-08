@@ -7,4 +7,10 @@
 # method 2: sort the letters alphabetically with a helper function, if the sorted versions match, they are anagrams
 # can pre-sort the dictionary_candidates to make this faster and try to shrink the pool of available candidates
 
-# next question in cursor chat: but how will it know to look up ILST key? if I give the presorted structure TILS as a key, how does it look up all anagrams for that word?
+#Final PLan
+# preprocess the word file to create a dictionary of words and their sorted letters
+# for each item in the word file, sort the letters alphebetically and use the sorted letters as the key,
+# check if this key already exists, if so, just add the original word to the value list for that key
+# if not, add the key and add the original word as the value for the key
+# this creates a dictionary of words and their sorted letters, when given the jumbled word, I will sort it alphebetically as well. if it has any real word matches,
+# then it will be a key in the dict. Otherwise, I will return the letters as there is no known word to match

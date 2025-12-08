@@ -43,6 +43,25 @@ def sorted_letters(scrambled_letters):
     return ''.join(sorted(scrambled_letters))
 
 
+def build_sorted_dict(words_list):
+    """Build a dictionary of words where the key is the letters of the word sorted alphebetaically
+     and the value is a list of english languagewords that have the same sorted letters."""
+    sorted_dict = {}
+    for word in words_list:
+        # use the helper function to sort the letters of the word alphebetically
+        key = sorted_letters(word)
+        if key in sorted_dict:
+            # if the key already exists, add the word to the set
+            sorted_dict[key].add(word)
+        else:
+        # store the value words temporarily (sets exclude duplicates). {word} creates a new set with one element
+            sorted_dict[key] = {word}
+    for key in sorted_dict:
+        # convert all the values from sets of words to lists
+        sorted_dict[key] = list(sorted_dict[key])
+    return sorted_dict
+
+
 def solve_one_jumble(letters):
     """Solve a single jumbled word by unscrambling the given letters.
     Parameters:
@@ -212,7 +231,7 @@ if __name__ == '__main__':
     # TODO: Create any data structures you may want to help unscramble words
     # HINT: You may want to store the words list in a different data structure
     # that could help you look up candidate words faster than searching a list
-    # ========> YOUR CODE HERE <========
+    anagram_dict = build_sorted_dict(words_list)
 
     # Test solving several word jumble example inputs
     # You can comment out these lines to test fewer example inputs at a time

@@ -1,1 +1,3 @@
 scope.md
+__pycache__/
+*.pyc
