@@ -20,9 +20,11 @@
 # Be sure to commit your solution to your repo, and take a break to celebrate!
 # Then, come back and try to solve the final jumble for the other test cases.
 
-
-# HINT: You may want to use itertools.combinations to solve the final jumble
-# import itertools
+# itertools is a built-in Python module with efficient tools for working with iterables (things you can loop over). It's great for:
+# Generating combinations, permutations, products
+# Infinite sequences
+# Grouping/filtering data
+from itertools import combinations
 
 
 def get_file_lines(filename='/usr/share/dict/words'):
@@ -88,10 +90,10 @@ def solve_one_jumble(letters):
 def solve_final_jumble(letters, final_circles):
     """Solve the final jumbled phrase by unscrambling the given letters.
     Parameters:
-    - letters: string, the scrambled letters for a single word
+    - letters: string, the scrambled letters for a single word, A scrambled string like "TUMUTHT"
     - final: list of strings with O (letter "oh") the  that shows
         how the final jumble's letters are arranged into a word or phrase.
-    Return value:
+    Return value: A pattern like ['OOOO', 'OOO'] telling you the answer is 4 + 3 letters
     - list of tuples, all valid phrases that the given letters unscramble to
     """
     # Check if the number of circles given matches the number of letters given
@@ -122,9 +124,45 @@ def solve_final_jumble(letters, final_circles):
     # Returned data should be a list of tuples (phrases) of strings (words)
     # Example: [('FIRST', 'SOLUTION'), ('SECOND', 'SOLUTION')]
     valid_phrases = []
+    # seen_phrases is a helper set that deltes duplicates. bc combinations() only returns number combos,
+    # the numbers get applied to indices, whose values are letters, which is how wqe generate all possible 4 letter
+    # combinations from a 7 letter array. but the number combos returned by combiantions are unique, while the letter combos are not, allowing for duplications
+    # which the helper set prevents
+    seen_phrases = set()
+    
+    # the numerical length of the first word in the final phrase, this method only solves for 2 word phrases
+    # if >2 words, would need branching logic to handle longer phrases and checks for the length of the whole phrase
+    first_size = group_sizes[0]
+    # combinations(iterable, r) method from itertools to generate all possible combinations of r items
+    # returns a list of tuples
+    for indices in combinations(range(len(letters)), first_size):
+        
+        # use the numeric indices from the tuples to get the actual letters and create a string
+        first_letters = ''.join(letters[i] for i in indices)
+        
+        # remaining_indices is a list of indices that are not in the first word, using list comprhension (shorthand) to build the list
+        remaining_indices = [i for i in range(len(letters)) if i not in indices]
+        
+        # repeat the process of converting the numbers to indices and getting the letter values at those indexes
+        second_letters = ''.join(letters[i] for i in remaining_indices)
 
-    # TODO: Unscramble the given letters into all valid phrases
-    # ========> YOUR CODE HERE <========
+        # use the sorting helper function to sort the letters of the first and second words alphebetically
+        first_key = sorted_letters(first_letters)
+        second_key = sorted_letters(second_letters)
+
+        # use the sorted letters as a key to look up the value in the dictionary, returns empty list if key not found
+        first_words = anagram_dict.get(first_key, [])
+        second_words = anagram_dict.get(second_key, [])
+
+        if first_words and second_words:
+            # Loop through every combination of first + second word
+            for w1 in first_words:
+                for w2 in second_words:
+                    phrase = (w1, w2)
+                    # use the helper set to prevent duplicates
+                    if phrase not in seen_phrases:
+                        seen_phrases.add(phrase)
+                        valid_phrases.append(phrase)
 
     return valid_phrases
 
