@@ -179,9 +179,11 @@ def solve_word_jumble(letters, circles, final):
     - final: list of strings in the same format as circles parameter that shows
         how the final jumble's letters are arranged into a word or phrase."""
     # Create a string to collect circled letters for the final jumbled phrase
+    # track if there are multiple solutions to the single jumble
     final_letters = ''
+    has_multiple_solutions = False
+    all_jumble_results = []
 
-    # Solve each jumbled word one at a time by unscrambling the given letters
     for index in range(len(letters)):
         # Get the scrambled letters and circled blanks for one jumbled word
         scrambled_letters = letters[index]
@@ -195,17 +197,34 @@ def solve_word_jumble(letters, circles, final):
         # Check if no solution was found, then skip to the next jumble
         if len(words) == 0:
             print('(no solution)')
+            all_jumble_results.append((scrambled_letters, [], circled_blanks))
             continue
-        # Otherwise, display the unscrambled words with "or" between each
-        print(f'unscrambled into {len(words)} words: {" or ".join(words)}')
 
-        # Determine which letters in the unscrambled word are circled and
-        # concatenate them to final_letters to solve the final jumbled phrase
+        print(f'unscrambled into {len(words)} words: {" or ".join(words)}')
+        all_jumble_results.append((scrambled_letters, words, circled_blanks))
+
+        if len(words) > 1:
+            has_multiple_solutions = True
+
         for letter, blank in zip(words[0], circled_blanks):
             if blank == 'O':
                 final_letters += letter
 
     # If no jumbles were solved, then do not attempt to solve the final jumble
+    # if multiple solutions for a single jumble are found, display the options for th user to choose from
+    if has_multiple_solutions:
+        print('\n--- MULTIPLE SOLUTIONS DETECTED ---')
+        print('Human choice required. Here are the options with circle positions:\n')
+        for i, (scrambled, words, circles_pattern) in enumerate(all_jumble_results):
+            if len(words) > 1:
+                print(f'Jumble {i+1}: {scrambled}')
+                print(f'  Circle pattern: {circles_pattern}')
+                for word in words:
+                    circled = ''.join(letter for letter, blank in zip(word, circles_pattern) if blank == 'O')
+                    print(f'    {word} -> circled letters: {circled}')
+                print()
+        return
+
     if len(final_letters) == 0:
         print('Did not solve any jumbles, so could not solve final jumble.')
         return
